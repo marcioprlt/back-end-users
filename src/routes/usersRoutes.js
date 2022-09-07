@@ -5,6 +5,7 @@ const router = express.Router();
 
 router
     .get("/api/v1/users", UserController.listUsers)
+    .get("/api/v1/users/byname", UserController.findUsersByName)
     .get("/api/v1/users/:id", UserController.listUserById)
     .post("/api/v1/users", UserController.createUser)
     .put("/api/v1/users/:id", UserController.updateUser)

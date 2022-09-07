@@ -60,7 +60,21 @@ class UserController {
             } else {
                 res.status(404).send({message: `Usuário não encontrado -- ${err.message}`});
             }
-        })
+        });
+    }
+
+    static findUsersByName = (req, res) => {
+        const name = req.query.name;
+
+        users.find((err, users) => {
+            let usersWithName = [];
+            users.forEach(user => {
+                if (user.name.toLowerCase().includes(name.toLowerCase())) {
+                    usersWithName.push(user);
+                }
+            });
+            res.status(200).json(usersWithName);
+        });
     }
 }
 
