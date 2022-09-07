@@ -3,23 +3,24 @@ import users from "../models/User.js";
 class UserController {
 
     static listUsers = (req, res) => {
-        users.find((err, users) => {
+        users.find().lean().exec((err, users) => {
 
-            let noPassword = users.map(user => {
-                user.password = undefined;
-                return user;
-            });
-            res.status(200).json(noPassword);
+            users.forEach(user => delete user.password);
+            res.status(200).json(users);
         });
     }
 
     static listUserById = (req, res) => {
         const id = req.params.id;
 
-        users.findById(id, (err, user) => {
+        users.findById(id).lean().exec((err, user) => {
             if (!err) {
-                user.password = undefined;
-                res.status(200).send(user);
+                if (user != null) {
+                    delete user.password;
+                    res.status(200).send(user);
+                } else {
+                    res.status(404).send({message: "Usuário não encontrado"});
+                }
             } else {
                 res.status(404).send({message: `Usuário não encontrado -- ${err.message}`});
             }
@@ -45,9 +46,21 @@ class UserController {
             if (!err) {
                 res.status(200).send({message: "Usuário atualizado com sucesso"});
             } else {
-                res.status(404).send({message: `Usuário não encontrado -- ${err}`});
+                res.status(404).send({message: `Usuário não encontrado -- ${err.message}`});
             }
         });
+    }
+
+    static deleteUser = (req, res) => {
+        const id = req.params.id;
+
+        users.findByIdAndDelete(id, (err) => {
+            if (!err) {
+                res.status(204).send({message: "Usuário removido com sucesso"});
+            } else {
+                res.status(404).send({message: `Usuário não encontrado -- ${err.message}`});
+            }
+        })
     }
 }
 

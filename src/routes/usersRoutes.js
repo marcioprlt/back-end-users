@@ -8,5 +8,6 @@ router
     .get("/api/v1/users/:id", UserController.listUserById)
     .post("/api/v1/users", UserController.createUser)
     .put("/api/v1/users/:id", UserController.updateUser)
+    .delete("/api/v1/users/:id", UserController.deleteUser)
 
 export default router;
